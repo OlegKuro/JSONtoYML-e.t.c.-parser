@@ -97,7 +97,7 @@ public class YMLCreator {
             try {
                 img_link = gGroup.get("brand_img").toString();
             } catch (NullPointerException e) {
-                if (img_link == null)
+                if (img_link.isEmpty())
                     img_link = "default_link.pnh";
             }
             JsonArray items = gGroup.get("items").getAsJsonArray();
@@ -109,8 +109,8 @@ public class YMLCreator {
     private void collectItems(String img_link, JsonArray items) {
         for (JsonElement element: items) {
             JsonObject obj = element.getAsJsonObject();
-            String price = obj.get("price").toString();
-            String id = obj.get("id").toString();
+            String price = obj.get("price").toString().replaceAll(" ", "");
+            String id = obj.get("id").toString().replaceAll(" ", "");
             String certName = obj.get("name").toString().replaceAll("\"","");
             String days_avg = obj.get("days_avg").toString().replaceAll("\"","");
             String days_max = obj.get("days_max").toString().replaceAll("\"","");
