@@ -2,7 +2,7 @@ package Utils;
 
 public class Quote {
     private String content = null;
-    private static String q = "&quot;";
+    private static String q = "\"";
 
     public Quote(String inner){
         StringBuilder sb = new StringBuilder();

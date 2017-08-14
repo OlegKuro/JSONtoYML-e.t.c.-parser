@@ -33,53 +33,53 @@ public class YMLCreator {
         StringBuilder sb = new StringBuilder();
         sb.append(new XMLTag("?xml version=" + new Quote("1.0") +
                 " encoding=" + new Quote("UTF-8")+ "?").toString());
-        printLine(0, sb.toString());
+        printLine(sb.toString());
         sb = new StringBuilder();
 
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm");//dd/MM/yyyy
         Date now = new Date();
         String strDate = sdfDate.format(now);
         sb.append(new XMLTag("yml_catalog date=" + new Quote(strDate)));
-        printLine(0, sb.toString());
+        printLine(sb.toString());
 
-        printLine(1, new XMLTag("shop").toString());
+        printLine(new XMLTag("shop").toString());
 
-        printLine(1, new DoubleXMLTag("name", shopName).toString());
+        printLine(new DoubleXMLTag("name", shopName).toString());
 
-        printLine(1, new DoubleXMLTag("company", companyName).toString());
+        printLine(new DoubleXMLTag("company", companyName).toString());
 
-        printLine(1, new DoubleXMLTag("url", compURL).toString());
+        printLine(new DoubleXMLTag("url", compURL).toString());
 
-        printLine(1, new XMLTag("currencies").toString());
+        printLine(new XMLTag("currencies").toString());
 
         sb = new StringBuilder();
         sb.append(XMLTag.left).append("currency id=").append(new Quote("RUR"))
                 .append(" rate=").append(new Quote("1"))
                 .append("/").append(XMLTag.right);
-        printLine(2, sb.toString());
+        printLine(sb.toString());
 
-        printLine(1, new XMLTag("/currencies").toString());
+        printLine(new XMLTag("/currencies").toString());
 
-        printLine(1, new XMLTag("categories").toString());
+        printLine(new XMLTag("categories").toString());
 
         sb = new StringBuilder();
         sb.append(XMLTag.left).append("category id=").append(new Quote("1"))
                 .append(XMLTag.right);
         sb.append("Запчасти и детали");
         sb.append(new XMLTag("/category"));
-        printLine(2, sb.toString());
+        printLine(sb.toString());
 
-        printLine(1, new XMLTag("/categories").toString());
+        printLine(new XMLTag("/categories").toString());
 
-        printLine(1, new XMLTag("offers").toString());
+        printLine(new XMLTag("offers").toString());
 
         printOffers(json);
 
-        printLine(1, new XMLTag("/offers").toString());
+        printLine(new XMLTag("/offers").toString());
 
-        printLine(1, new XMLTag("/shop").toString());
+        printLine(new XMLTag("/shop").toString());
 
-        printLine(0, new XMLTag("/yml_catalog").toString());
+        printLine(new XMLTag("/yml_catalog").toString());
 
         pw.flush();
         pw.close();
@@ -92,13 +92,11 @@ public class YMLCreator {
         Set<Map.Entry<String, JsonElement>> entries = object.entrySet();//will return members of your object
         for (Map.Entry<String, JsonElement> entry: entries) {
             JsonObject gGroup = entry.getValue().getAsJsonObject();
-            //TODO: zaglushka pic?
-            String img_link = null;
+            String img_link;
             try {
                 img_link = gGroup.get("brand_img").toString();
             } catch (NullPointerException e) {
-                if (img_link.isEmpty())
-                    img_link = "default_link.pnh";
+                img_link = "http://the-parts.ru/res/tpi/logo-zaglushka.jpg";
             }
             JsonArray items = gGroup.get("items").getAsJsonArray();
             collectItems(img_link.replaceAll("\"",""), items);
@@ -109,8 +107,8 @@ public class YMLCreator {
     private void collectItems(String img_link, JsonArray items) {
         for (JsonElement element: items) {
             JsonObject obj = element.getAsJsonObject();
-            String price = obj.get("price").toString().replaceAll(" ", "");
-            String id = obj.get("id").toString().replaceAll(" ", "");
+            String price = obj.get("price").toString().replaceAll("\"", "");
+            String id = obj.get("id").toString().replaceAll("\"", "");
             String certName = obj.get("name").toString().replaceAll("\"","");
             String days_avg = obj.get("days_avg").toString().replaceAll("\"","");
             String days_max = obj.get("days_max").toString().replaceAll("\"","");
@@ -122,37 +120,34 @@ public class YMLCreator {
                     .append(" available=").append(new Quote("true").toString());
             sb.append(XMLTag.right);
 
-            printLine(2,sb.toString());
+            printLine(sb.toString());
 
-            printLine(3, new DoubleXMLTag("url","tut url na tovar na str saita").toString());
+            printLine(new DoubleXMLTag("url", "tut url na tovar na str saita").toString());
 
-            printLine(3, new DoubleXMLTag("price", price).toString());
+            printLine(new DoubleXMLTag("price", price).toString());
 
-            printLine(3, new DoubleXMLTag("categoryId", "1").toString());
+            printLine(new DoubleXMLTag("categoryId", "1").toString());
 
-            printLine(3, new DoubleXMLTag("currencyId", "RUR").toString());
+            printLine(new DoubleXMLTag("currencyId", "RUR").toString());
 
-            printLine(3, new DoubleXMLTag("picture", img_link).toString());
+            printLine(new DoubleXMLTag("picture", img_link).toString());
 
-            printLine(3, new DoubleXMLTag("store", "true").toString());
+            printLine(new DoubleXMLTag("store", "true").toString());
 
-            printLine(3, new DoubleXMLTag("delivery", "true").toString());
+            printLine(new DoubleXMLTag("delivery", "true").toString());
 
-            printLine(3, new DoubleXMLTag("vendor", brand).toString());
+            printLine(new DoubleXMLTag("vendor", brand).toString());
 
-            printLine(3, new DoubleXMLTag("name", certName).toString());
+            printLine(new DoubleXMLTag("name", certName).toString());
 
             //TODO: delivery options
-            printLine(2, new XMLTag("/offer").toString());
+            printLine(new XMLTag("/offer").toString());
         }
     }
 
     //level -- tabs count
     //line -- line to print
-    private void printLine(int level, String line) {
-        for (int i = 0; i < level; i++) {
-            pw.print("\t");
-        }
+    private void printLine(String line) {
         pw.println(line);
     }
 }

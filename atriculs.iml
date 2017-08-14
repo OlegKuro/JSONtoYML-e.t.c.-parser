@@ -11,5 +11,6 @@
     <orderEntry type="library" name="be.fluid-it.tools.rundeck.plugins:rundeck-httppost-plugin:0.1-1" level="project" />
     <orderEntry type="library" name="org.apache.directory.studio:org.apache.httpcomponents.httpclient:4.1.2" level="project" />
     <orderEntry type="library" name="com.google.code.gson:gson:2.8.1" level="project" />
+    <orderEntry type="library" name="org.apache.poi:poi-ooxml:3.17-beta1" level="project" />
   </component>
 </module>

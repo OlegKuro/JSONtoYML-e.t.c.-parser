@@ -3,8 +3,8 @@ package Utils;
 public class XMLTag {
     private String tag = null;
     protected static String
-            left = "&lt;",
-            right = "&gt;";
+            left = "<",
+            right = ">";
 
     public XMLTag(String inner){
         StringBuilder sb = new StringBuilder();

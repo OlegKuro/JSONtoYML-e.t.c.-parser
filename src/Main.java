@@ -1,3 +1,5 @@
+import Models.Item;
+import Utils.XLSXUtil;
 import Utils.YMLCreator;
 import org.boon.Pair;
 
@@ -6,22 +8,53 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-public class HTTPSend {
-    private static String TOKEN = null;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Stream;
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
-        Authorization authorization = new Authorization();
-        TOKEN = authorization.TOKEN;
-        System.out.println("TOKEN:" + TOKEN);
-        /*that's how we make requests*/
-        MakeRequest mr = new MakeRequest("01080", TOKEN);
-        System.out.println(mr.getAns());
-        if (!mr.getAns().equals("[]")) {
-            YMLCreator yml = new YMLCreator("test.yml");
-            yml.Create(mr.getAns());
+public class Main {
+
+    private static final String XLSXFoldName = "xlsx input files";
+
+    public static void main(String[] args) throws FileNotFoundException {
+        YMLCreator yml = new YMLCreator("test.yml");
+        Scanner sc = new Scanner(new File("out.json"));
+        StringBuilder sb = new StringBuilder();
+        while (sc.hasNext()) {
+            sb.append(sc.next());
         }
-        mr = null;
+        yml.Create(sb.toString());
+
+        List<String> inputFiles = new LinkedList<>();
+        try (Stream<Path> paths = Files.walk(Paths.get(XLSXFoldName))) {
+            Object[] temp = paths.toArray();
+            for (Object object : temp) {
+                String s = object.toString().replaceAll(XLSXFoldName, "");
+                if (!s.endsWith("xlsx"))
+                    continue;
+                if (!s.isEmpty()) {
+                    inputFiles.add(s.substring(1));
+                }
+            }
+
+            for (String n : inputFiles) {
+                List<Item> items = XLSXUtil.workWithFile(XLSXFoldName + "/" + n);
+
+                PrintWriter pw = new PrintWriter(new File("debug.txt"));
+                for (Item item : items) {
+                    pw.println(item.toString());
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static String performPostCall(String requestURL,
@@ -56,8 +89,7 @@ public class HTTPSend {
                 while ((line=br.readLine()) != null) {
                     response+=line;
                 }
-            }
-            else {
+            } else {
                 response="";
 
             }
@@ -71,7 +103,7 @@ public class HTTPSend {
     private static String getPostDataString(ArrayList<Pair<String, String>> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
-        for(Pair<String,String> entry : params){
+        for (Pair<String, String> entry : params) {
             if (first)
                 first = false;
             else
@@ -84,4 +116,5 @@ public class HTTPSend {
 
         return result.toString();
     }
+
 }
