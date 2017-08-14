@@ -1,8 +1,9 @@
+
+
 import Models.Item;
 import Utils.XLSXUtil;
 import Utils.YMLCreator;
 import org.boon.Pair;
-
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -43,13 +44,14 @@ public class Main {
             }
 
             for (String n : inputFiles) {
-                List<Item> items = XLSXUtil.workWithFile(XLSXFoldName + "/" + n);
+                List<Item> items = leonidParse(XLSXFoldName + "/" + n);
 
                 PrintWriter pw = new PrintWriter(new File("debug.txt"));
                 for (Item item : items) {
                     pw.println(item.toString());
                 }
-
+                pw.flush();
+                pw.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
